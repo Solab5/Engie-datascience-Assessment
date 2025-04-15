@@ -251,27 +251,7 @@ make typecheck
 make format
 ```
 
-### Debugging
-- Set `LOG_LEVEL=DEBUG` in `src/config.py` for detailed logs
-- Use the `/debug` endpoint for model interpretation
-- Check `logs/app.log` for detailed application logs
 
-## Troubleshooting
 
-### Common Issues
-1. **Missing Dependencies**
-   ```bash
-   make install-dev  # Installs development dependencies
-   ```
 
-2. **Model Loading Errors**
-   ```bash
-   make clean  # Cleans cached models
-   make train  # Retrains models
-   ```
-
-3. **Data Format Issues**
-   - Ensure CSV files use UTF-8 encoding
-   - Verify date format: YYYY-MM-DD
-   - Check for required columns
 
