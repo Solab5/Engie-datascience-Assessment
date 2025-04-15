@@ -1,9 +1,10 @@
-.PHONY: all install train predict clean test
+.PHONY: all install train predict clean test run
 
 # Variables
 PYTHON = python
 PIP = pip
 PYTHONPATH = $(shell pwd)
+UVICORN = uvicorn
 
 # Default target
 all: install train
@@ -29,6 +30,7 @@ clean:
 	rm -rf src/features/__pycache__
 	rm -rf src/models/__pycache__
 	rm -rf src/examples/__pycache__
+	rm -rf src/app/__pycache__
 
 # Run tests (you can add your test commands here)
 test:
@@ -41,7 +43,13 @@ setup:
 	mkdir -p src/features
 	mkdir -p src/models
 	mkdir -p src/examples
+	mkdir -p src/app/templates
+	mkdir -p src/app/static
 	mkdir -p tests
+
+# Run FastAPI application
+run:
+	PYTHONPATH=$(PYTHONPATH) $(UVICORN) src.app.main:app --reload --host 0.0.0.0 --port 8000
 
 # Help command
 help:
@@ -52,4 +60,5 @@ help:
 	@echo "  make clean      - Clean up generated files"
 	@echo "  make test       - Run tests"
 	@echo "  make setup      - Create necessary directories"
+	@echo "  make run        - Run FastAPI application"
 	@echo "  make help       - Show this help message" 

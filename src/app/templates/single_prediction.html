@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block title %}Single Prediction{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Single Account Prediction</h4>
+            </div>
+            <div class="card-body">
+                <form action="/predict-single" method="post" enctype="multipart/form-data">
+                    <div class="mb-4">
+                        <label for="account_id" class="form-label">Account ID</label>
+                        <input type="text" class="form-control form-control-lg" id="account_id" name="account_id" required placeholder="Enter account ID">
+                        <div class="form-text text-muted">Enter the account ID you want to predict.</div>
+                    </div>
+                    <div class="mb-4">
+                        <label for="file" class="form-label">Upload CSV File</label>
+                        <input type="file" class="form-control form-control-lg" id="file" name="file" accept=".csv" required>
+                        <div class="form-text text-muted">Upload a CSV file containing transaction data.</div>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-upload me-2"></i>Upload and Predict
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

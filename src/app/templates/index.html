@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="mb-0">Welcome to Engie Energy Access Loan Prediction System</h4>
+            </div>
+            <div class="card-body">
+                <p class="lead">This system helps predict loan completion and expected payoff time for energy kit loans.</p>
+                
+                <div class="row mt-4">
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-users fa-3x mb-3 text-primary"></i>
+                                <h5>Batch Prediction</h5>
+                                <p>Upload a CSV file with multiple accounts to get predictions for all of them.</p>
+                                <a href="/predict" class="btn btn-primary">Start Batch Prediction</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card h-100">
+                            <div class="card-body text-center">
+                                <i class="fas fa-user fa-3x mb-3 text-primary"></i>
+                                <h5>Single Prediction</h5>
+                                <p>Get detailed predictions for a specific account.</p>
+                                <a href="/predict-single" class="btn btn-primary">Start Single Prediction</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
