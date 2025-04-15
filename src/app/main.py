@@ -6,6 +6,7 @@ import pandas as pd
 from pathlib import Path
 import os
 from ..models.inference import LoanPredictor
+from ..features.build_features import create_date_features, create_account_features, create_payment_features, create_early_payment_features, create_derived_features, create_target_variables, handle_missing_values
 
 app = FastAPI(title="Loan Prediction API")
 
@@ -30,27 +31,36 @@ async def predict(
     request: Request,
     file: UploadFile = File(...)
 ):
-    # Read the uploaded file
-    df = pd.read_csv(file.file)
-    
-    # Make predictions
-    predictions = predictor.predict(df)
-    
-    # Convert predictions to HTML table
-    predictions_html = predictions.to_html(
-        classes="table table-striped table-hover",
-        index=False,
-        float_format=lambda x: f"{x:.2f}"
-    )
-    
-    return templates.TemplateResponse(
-        "results.html",
-        {
-            "request": request,
-            "predictions": predictions_html,
-            "num_predictions": len(predictions)
-        }
-    )
+    try:
+        # Read the uploaded file
+        df = pd.read_csv(file.file)
+        
+        # Make predictions
+        predictions = predictor.predict(df)
+        
+        # Convert predictions to HTML table
+        predictions_html = predictions.to_html(
+            classes="table table-striped table-hover",
+            index=False,
+            float_format=lambda x: f"{x:.2f}"
+        )
+        
+        return templates.TemplateResponse(
+            "results.html",
+            {
+                "request": request,
+                "predictions": predictions_html,
+                "num_predictions": len(predictions)
+            }
+        )
+    except Exception as e:
+        return templates.TemplateResponse(
+            "error.html",
+            {
+                "request": request,
+                "error": f"An error occurred while processing your request: {str(e)}"
+            }
+        )
 
 @app.get("/predict-single", response_class=HTMLResponse)
 async def predict_single_form(request: Request):
@@ -62,29 +72,54 @@ async def predict_single(
     account_id: str = Form(...),
     file: UploadFile = File(...)
 ):
-    # Read the uploaded file
-    df = pd.read_csv(file.file)
-    
-    # Filter for the specific account
-    account_data = df[df['Account ID'] == account_id]
-    
-    if len(account_data) == 0:
+    try:
+        # Read the uploaded file
+        df = pd.read_csv(file.file)
+        
+        # Filter for the specific account (case-insensitive)
+        account_data = df[df['Account ID'].astype(str).str.lower() == account_id.lower()]
+        
+        if len(account_data) == 0:
+            return templates.TemplateResponse(
+                "error.html",
+                {
+                    "request": request,
+                    "error": f"Account {account_id} not found in the data"
+                }
+            )
+        
+        # Make prediction
+        prediction = predictor.predict_single_account(account_data)
+        
+        return templates.TemplateResponse(
+            "single_result.html",
+            {
+                "request": request,
+                "account_id": account_id,
+                "prediction": prediction
+            }
+        )
+    except pd.errors.EmptyDataError:
         return templates.TemplateResponse(
             "error.html",
             {
                 "request": request,
-                "error": f"Account {account_id} not found in the data"
+                "error": "The uploaded file is empty. Please upload a valid CSV file."
             }
         )
-    
-    # Make prediction
-    prediction = predictor.predict_single_account(account_data)
-    
-    return templates.TemplateResponse(
-        "single_result.html",
-        {
-            "request": request,
-            "account_id": account_id,
-            "prediction": prediction
-        }
-    ) 
+    except pd.errors.ParserError:
+        return templates.TemplateResponse(
+            "error.html",
+            {
+                "request": request,
+                "error": "Could not parse the CSV file. Please ensure it's a valid CSV format."
+            }
+        )
+    except Exception as e:
+        return templates.TemplateResponse(
+            "error.html",
+            {
+                "request": request,
+                "error": f"An error occurred while processing your request: {str(e)}"
+            }
+        )

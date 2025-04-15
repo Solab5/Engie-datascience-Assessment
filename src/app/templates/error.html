@@ -1,21 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Error - Loan Prediction System{% endblock %}
+{% block title %}Error{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
         <div class="card">
             <div class="card-header bg-danger text-white">
-                <h4 class="mb-0">Error</h4>
+                <h4 class="mb-0">
+                    <i class="fas fa-exclamation-circle me-2"></i>Error
+                </h4>
             </div>
             <div class="card-body">
-                <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-triangle me-2"></i>
+                <div class="alert alert-danger mb-4">
                     {{ error }}
                 </div>
-                
-                <div class="mt-4">
+                <div class="d-grid gap-2">
+                    <a href="javascript:history.back()" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Go Back
+                    </a>
                     <a href="/" class="btn btn-primary">
                         <i class="fas fa-home me-2"></i>Return to Home
                     </a>
