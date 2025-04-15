@@ -4,7 +4,7 @@ from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, roc_auc_score, mean_absolute_error, r2_score
 import joblib
-from src.config import RANDOM_STATE, TEST_SIZE, COMPLETION_MODEL_PATH, TIMING_MODEL_PATH
+from ..config import RANDOM_STATE, TEST_SIZE, COMPLETION_MODEL_PATH, TIMING_MODEL_PATH
 
 def prepare_features(df, target_type):
     drop_cols = ['Account ID', 'Account Kit Type', 'first_transaction_date', 

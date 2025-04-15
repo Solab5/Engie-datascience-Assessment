@@ -1,7 +1,7 @@
 import pandas as pd
-from src.config import RAW_DATA_PATH, PROCESSED_DATA_PATH
-from src.features.build_features import load_data, build_features
-from src.models.train import train_models
+from .config import RAW_DATA_PATH, PROCESSED_DATA_PATH
+from .features.build_features import load_data, build_features
+from .models.train import train_models
 
 def main():
     # Load and process data

@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.config import EARLY_PAYMENT_WINDOW
+from ..config import EARLY_PAYMENT_WINDOW
 
 def load_data(file_path):
     return pd.read_csv(file_path)
@@ -45,7 +45,21 @@ def create_payment_features(df, account_df):
     payment_features.columns = ['_'.join(col).strip() for col in payment_features.columns.values]
     payment_features.rename(columns={'Date of Transaction_<lambda>': 'avg_days_between_payments'}, inplace=True)
     payment_features = payment_features.reset_index()
-    return account_df.merge(payment_features, on='Account ID', how='left')
+    
+    # Calculate loan paid percentage
+    last_transactions = df.sort_values('Date of Transaction').groupby('Account ID').last()[['Total Amount of Loan Received', 'Payment Plan Total Loan Value']]
+    last_transactions['loan_paid_percentage'] = (last_transactions['Total Amount of Loan Received'] / 
+                                                last_transactions['Payment Plan Total Loan Value'] * 100)
+    last_transactions = last_transactions.reset_index()[['Account ID', 'loan_paid_percentage']]
+    
+    # Add count of different transaction types
+    transaction_type_counts = pd.crosstab(df['Account ID'], df['Type of Transaction']).reset_index()
+    
+    # Merge all features
+    account_df = account_df.merge(payment_features, on='Account ID', how='left')
+    account_df = account_df.merge(last_transactions, on='Account ID', how='left')
+    account_df = account_df.merge(transaction_type_counts, on='Account ID', how='left')
+    return account_df
 
 def create_early_payment_features(df, account_df):
     early_df = df[(df['Date of Transaction'] - df.groupby('Account ID')['Date of Transaction'].transform('min')).dt.days <= EARLY_PAYMENT_WINDOW]
@@ -58,12 +72,43 @@ def create_early_payment_features(df, account_df):
     return account_df.merge(early_payment_features, on='Account ID', how='left')
 
 def create_derived_features(account_df):
-    account_df['payment_frequency'] = account_df['Value of Transaction_count'] / account_df['account_lifetime_days']
-    account_df['avg_payment_size'] = account_df['Value of Transaction_sum'] / account_df['Value of Transaction_count']
-    account_df['payment_to_loan_ratio'] = account_df['Value of Transaction_sum'] / account_df['Payment Plan Total Loan Value']
-    account_df['days_purchased_ratio'] = account_df['Number of Days Purchased_sum'] / account_df['account_lifetime_days']
-    account_df['payment_amount_cv'] = account_df['Value of Transaction_std'] / account_df['Value of Transaction_mean']
-    account_df['repayment_pace'] = account_df['loan_paid_percentage'] / account_df['account_lifetime_days']
+    # Handle division by zero cases
+    account_df['payment_frequency'] = np.where(
+        account_df['account_lifetime_days'] > 0,
+        account_df['Value of Transaction_count'] / account_df['account_lifetime_days'],
+        0
+    )
+    
+    account_df['avg_payment_size'] = np.where(
+        account_df['Value of Transaction_count'] > 0,
+        account_df['Value of Transaction_sum'] / account_df['Value of Transaction_count'],
+        0
+    )
+    
+    account_df['payment_to_loan_ratio'] = np.where(
+        account_df['Payment Plan Total Loan Value'] > 0,
+        account_df['Value of Transaction_sum'] / account_df['Payment Plan Total Loan Value'],
+        0
+    )
+    
+    account_df['days_purchased_ratio'] = np.where(
+        account_df['account_lifetime_days'] > 0,
+        account_df['Number of Days Purchased_sum'] / account_df['account_lifetime_days'],
+        0
+    )
+    
+    account_df['payment_amount_cv'] = np.where(
+        (account_df['Value of Transaction_mean'] > 0) & (account_df['Value of Transaction_std'] > 0),
+        account_df['Value of Transaction_std'] / account_df['Value of Transaction_mean'],
+        0
+    )
+    
+    account_df['repayment_pace'] = np.where(
+        account_df['account_lifetime_days'] > 0,
+        account_df['loan_paid_percentage'] / account_df['account_lifetime_days'],
+        0
+    )
+    
     return account_df
 
 def create_target_variables(account_df):
