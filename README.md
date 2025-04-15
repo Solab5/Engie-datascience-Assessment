@@ -116,10 +116,6 @@ make train
   - Account characteristics
   - Payment behavior metrics
   - Temporal features
-- **Performance Metrics**:
-  - AUC-ROC: 0.85+
-  - Precision: 0.82
-  - Recall: 0.78
 
 ### Timing Model
 - **Type**: Gradient Boosting Regressor
@@ -128,9 +124,6 @@ make train
   - Early payment indicators
   - Loan amount ratios
   - Historical payment patterns
-- **Performance Metrics**:
-  - RMSE: ±15 days
-  - R²: 0.76
 
 ### Feature Engineering Pipeline
 1. **Transaction Processing**:
