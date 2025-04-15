@@ -54,7 +54,13 @@ This project implements a machine learning system for predicting loan completion
 
 ## Detailed Installation Guide
 
-### 1. Environment Setup
+### 1. Clone the Repository
+```bash
+git https://github.com/Solab5/Engie-datascience-Assessment.git
+cd loan-completion-prediction
+```
+
+### 2. Environment Setup
 
 #### Using venv (recommended)
 ```bash
@@ -79,7 +85,7 @@ conda activate loan-prediction
 make install
 ```
 
-### 2. Configuration
+### 3. Configuration
 1. Copy the example configuration:
 ```bash
 cp src/config.example.py src/config.py
@@ -92,7 +98,7 @@ DATA_DIR = "data/"
 LOG_LEVEL = "INFO"
 ```
 
-### 3. Model Training
+### 4. Model Training
 ```bash
 # Prepare the data directory
 make setup
@@ -269,14 +275,3 @@ make format
    - Verify date format: YYYY-MM-DD
    - Check for required columns
 
-## License
-[Specify your license here]
-
-## Contributing
-[Add contributing guidelines if applicable]
-
-## Support
-For support and questions:
-- Create an issue in the repository
-- Contact: [Add contact information]
-- Documentation: [Add documentation link]
