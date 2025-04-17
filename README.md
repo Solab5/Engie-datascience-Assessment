@@ -214,31 +214,9 @@ Input individual account details for immediate prediction.
 ![Results](docs/images/results_view.png)
 Detailed view of prediction results with visualizations.
 
-## Development
 
-### Running Tests
-```bash
-# Run all tests
-make test
 
-# Run specific test suite
-python -m pytest tests/test_inference.py
 
-# Run with coverage
-make coverage
-```
-
-### Code Quality
-```bash
-# Run linting
-make lint
-
-# Run type checking
-make typecheck
-
-# Format code
-make format
-```
 
 
 
