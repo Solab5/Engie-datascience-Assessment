@@ -86,10 +86,6 @@ make install
 ```
 
 ### 3. Configuration
-1. Copy the example configuration:
-```bash
-cp src/config.example.py src/config.py
-```
 
 2. Update the configuration variables in `src/config.py`:
 ```python
@@ -110,7 +106,7 @@ make train
 ## Technical Model Details
 
 ### Completion Model
-- **Type**: Gradient Boosting Classifier
+- **Type**: Random Forest Classifier
 - **Features**:
   - Transaction patterns (frequency, amounts, types)
   - Account characteristics
@@ -118,7 +114,7 @@ make train
   - Temporal features
 
 ### Timing Model
-- **Type**: Gradient Boosting Regressor
+- **Type**: Random Forest Regressor
 - **Features**:
   - Payment frequency
   - Early payment indicators
